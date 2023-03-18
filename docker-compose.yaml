@@ -1,0 +1,9 @@
+version:                "3"
+services:
+  datascience-notebook:
+      image:            jupyter/datascience-notebook
+      volumes:
+        - /Users/anastasia/Documents/Skoltech/Perception_in_robotics/Final Project/Pittsburgh_NetVlad:/home/anast/work
+      ports:
+        - 8888:8888
+      container_name:   datascience-notebook-container
