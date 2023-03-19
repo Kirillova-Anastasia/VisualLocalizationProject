@@ -1,11 +1,10 @@
-
 import os
 import torch
 import faiss
 import logging
 import numpy as np
 from glob import glob
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 from PIL import Image
 from os.path import join
 import torch.utils.data as data
