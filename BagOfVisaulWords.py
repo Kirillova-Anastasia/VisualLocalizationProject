@@ -1,24 +1,16 @@
-import math
-import torch
 import numpy as np
-import torchvision
-import torch.nn as nn
-import torch.nn.functional as F
 from tqdm import tqdm
-from torch.utils.data import DataLoader, SubsetRandomSampler
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.neighbors import NearestNeighbors
-import faiss
 import cv2
 from os import listdir
 from os.path import join
-import pandas as pd
 
 
-class BagOfVisaulWords(nn.Module):
+class BagOfVisaulWords():
     """BagOfVisaulWords implementation"""
 
-    def __init__(self, clusters_num=64):
+    def __init__(self, clusters_num=64, keypoints_algorithm='sift'):
         """
         Args:
             clusters_num : int
@@ -27,7 +19,17 @@ class BagOfVisaulWords(nn.Module):
                 TBP
         """
         super().__init__()
-        self.extractor = cv2.SIFT_create()
+        if keypoints_algorithm == 'sift':
+            self.extractor = cv2.SIFT_create()
+            print('SIFT initialised')
+        elif keypoints_algorithm == 'orb':
+            self.extractor = cv2.ORB_create()
+            print('ORB initialised')
+        elif keypoints_algorithm == 'surf':
+            self.extractor = cv2.SURF_create()
+            print('SURF initialised')
+        else:
+            raise('Wrong keypoints_algorithm')
         self.batch_size = 1000
         self.kmeans = MiniBatchKMeans(
             n_clusters=clusters_num, 
@@ -98,6 +100,8 @@ class BagOfVisaulWords(nn.Module):
     def predict(self, image):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         keypoint, descriptor = self._get_features(image)
+        if descriptor is None:
+            return []
         histogram = self._build_histogram(descriptor)
         dist, result = self.neighbor.kneighbors([histogram])
         return result

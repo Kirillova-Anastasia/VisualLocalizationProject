@@ -6,10 +6,12 @@ from os import listdir
 from os.path import join
 from tqdm import tqdm
 
+keypoints_algorithm = 'orb'
+
 dataset_dir = '/app/pitts_preparation/datasets/'
 test_dir = join(dataset_dir, 'pitts30k', 'images', 'test')
 
-model = BagOfVisaulWords()
+model = BagOfVisaulWords(keypoints_algorithm=keypoints_algorithm)
 model.fit(join(test_dir, 'database'))
 
 with open('predictions.txt', 'w') as f:
